@@ -1,42 +1,31 @@
-import { Response } from "node-appwrite";
-import sgMail from "@sendgrid/mail";
+import nodemailer from "nodemailer";
 
-export default async function ({ req, res, log, error, input, env }) {
+export default async ({ req, res }) => {
     try {
-        // Устанавливаем API-ключ SendGrid
-        sgMail.setApiKey(env.SENDGRID_API_KEY);
+        const { email, subject, message } = JSON.parse(req.body);
 
-        // Парсим входные данные (Appwrite передаёт input как строку)
-        const { to, subject, text } = JSON.parse(input || "{}");
-
-        if (!to || !subject || !text) {
-            return new Response(JSON.stringify({
-                success: false,
-                message: "Missing required fields: to, subject, text"
-            }), 400);
+        if (!email || !subject || !message) {
+            return res.json({ success: false, error: "Missing required fields" });
         }
 
-        // Формируем сообщение
-        const msg = {
-            to: to, // Email получателя
-            from: "your@email.com", // Укажите email, зарегистрированный в SendGrid
-            subject: subject,
-            text: text,
-            html: `<p>${text}</p>`,
-        };
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,  // Email-логин (переменная среды)
+                pass: process.env.EMAIL_PASS   // Пароль или App Password (Gmail)
+            }
+        });
 
-        // Отправляем письмо
-        await sgMail.send(msg);
+        await transporter.sendMail({
+            from: `"Your App" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject,
+            text: message
+        });
 
-        return new Response(JSON.stringify({
-            success: true,
-            message: "Email sent successfully!"
-        }), 200);
-    } catch (err) {
-        error(err.message);
-        return new Response(JSON.stringify({
-            success: false,
-            error: err.message
-        }), 500);
+        return res.json({ success: true, message: "Email sent successfully!" });
+
+    } catch (error) {
+        return res.json({ success: false, error: error.message });
     }
-}
+};
