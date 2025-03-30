@@ -1,0 +1,17 @@
+{
+  "name": "appwrite-sendgrid-function",
+  "version": "1.0.0",
+  "description": "Appwrite Cloud Function",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^7.12.0",
+    "node-appwrite": "^11.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
