@@ -18,9 +18,9 @@ export default async ({ req, res }) => {
 
         await transporter.sendMail({
             from: `"Your App" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject,
-            text: message
+            to: process.env.EMAIL_USER,
+            subject: "Hi Test",
+            text: "Hi Test"
         });
 
         return res.json({ success: true, message: "Email sent successfully!" });
