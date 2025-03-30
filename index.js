@@ -1,40 +1,39 @@
-import nodemailer from "nodemailer";
+const Nodemailer = require("nodemailer");
+const { MailtrapTransport } = require("mailtrap");
 
-export default async ({ req, res, context }) => {
-    try {
-        context.log("Parsing request body...");
-        const { email, subject, message } = JSON.parse(req.body);
-        context.log("Email details parsed:", { email, subject, message });
 
-        const transport = nodemailer.createTransport({
-            host: "sandbox.smtp.mailtrap.io",
-            port: 2525,
-            auth: {
-                user: process.env.MAILTRAP_USER,  // Логин из Mailtrap
-                pass: process.env.MAILTRAP_PASS   // Пароль из Mailtrap
-            }
-        });
+module.exports = async function (req, res) {
+  const TOKEN = process.env.TOKEN;
+  const EMAIL_USER = process.env.EMAIL_USER;
 
-        
+  if (!TOKEN || !EMAIL_USER) {
+    return res.json({ error: "Missing required environment variables." }, 400);
+  }
 
-        context.log("Transporter created. Sending email...");
+  const transport = Nodemailer.createTransport(
+    MailtrapTransport({
+      token: TOKEN,
+      testInboxId: 3571286,
+    })
+  );
 
-        await transport.sendMail({
-            from: "<test@gmail.com>",  
-            to: process.env.EMAIL_USER,  // Кому
-            subject: "Hi test",
-            text: "Hi test"
-        });
+  const sender = {
+    address: "hello@example.com",
+    name: "Mailtrap Test",
+  };
 
-        context.log(process.env.MAILTRAP_USER)
-        context.log(process.env.MAILTRAP_PASS)
-        context.log(process.env.EMAIL_USER)
-        
-        
-        context.log("Email sent successfully!");
-        return res.json({ success: true, message: "Email sent successfully!" });
-    } catch (error) {
-        context.log("Error sending email:", error.message);
-        return res.json({ success: false, error: error.message });
-    }
+  try {
+    const info = await transport.sendMail({
+      from: sender,
+      to: [EMAIL_USER],
+      subject: "You are awesome!",
+      text: "Congrats for sending test email with Mailtrap!",
+      category: "Integration Test",
+      sandbox: true,
+    });
+
+    return res.json({ success: true, message: "Email sent", info }, 200);
+  } catch (error) {
+    return res.json({ error: error.message }, 500);
+  }
 };

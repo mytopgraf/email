@@ -1,12 +1,13 @@
 {
   "name": "appwrite-mailtrap-function",
   "version": "1.0.0",
+  "description": "Appwrite Cloud Function to send emails using Mailtrap",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "nodemailer": "^6.9.7"
+    "nodemailer": "^6.9.5",
+    "mailtrap": "^4.0.0"
   }
 }
