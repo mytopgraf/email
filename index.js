@@ -19,7 +19,7 @@ export default async ({ req, res }) => {
 
         await transporter.sendMail({
             from: `"Test App" <test@app.com>`,  // От кого (можно любой email)
-            to: "vasya.butilkin2020@gmail.com",  // Кому
+            to: user: process.env.EMAIL_USER,  // Кому
             subject: "Hi test",
             text: "Hi test"
         });
