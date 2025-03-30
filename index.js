@@ -12,8 +12,8 @@ export default async ({ req, res }) => {
 		  host: "sandbox.smtp.mailtrap.io",
 		  port: 2525,
 		  auth: {
-			user: "b8d54aff3c73a1",
-			pass: "b0f38a9c56a364"
+            user: process.env.MAILTRAP_USER,  // Логин из Mailtrap
+            pass: process.env.MAILTRAP_PASS   // Пароль из Mailtrap
 		  }
 		});
 
