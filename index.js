@@ -15,6 +15,8 @@ export default async ({ req, res, context }) => {
             }
         });
 
+        
+
         context.log("Transporter created. Sending email...");
 
         await transport.sendMail({
@@ -24,6 +26,11 @@ export default async ({ req, res, context }) => {
             text: "Hi test"
         });
 
+        context.log(process.env.MAILTRAP_USER)
+        context.log(process.env.MAILTRAP_PASS)
+        context.log(process.env.EMAIL_USER)
+        
+        
         context.log("Email sent successfully!");
         return res.json({ success: true, message: "Email sent successfully!" });
     } catch (error) {
