@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 
 export default async ({ req, res }) => {
     try {
@@ -8,19 +8,20 @@ export default async ({ req, res }) => {
             return res.json({ success: false, error: "Missing required fields" });
         }
 
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_USER,  // Email-логин (переменная среды)
-                pass: process.env.EMAIL_PASS   // Пароль или App Password (Gmail)
-            }
-        });
+		const transport = nodemailer.createTransport({
+		  host: "sandbox.smtp.mailtrap.io",
+		  port: 2525,
+		  auth: {
+			user: "b8d54aff3c73a1",
+			pass: "b0f38a9c56a364"
+		  }
+		});
 
         await transporter.sendMail({
-            from: `"Your App" <${process.env.EMAIL_USER}>`,
-            to: process.env.EMAIL_USER,
-            subject: "Hi Test",
-            text: "Hi Test"
+            from: `"Test App" <test@app.com>`,  // От кого (можно любой email)
+            to: "vasya.butilkin2020@gmail.com",  // Кому
+            subject: "Hi test",
+            text: "Hi test"
         });
 
         return res.json({ success: true, message: "Email sent successfully!" });
