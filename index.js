@@ -4,10 +4,6 @@ export default async ({ req, res }) => {
     try {
         const { email, subject, message } = JSON.parse(req.body);
 
-        if (!email || !subject || !message) {
-            return res.json({ success: false, error: "Missing required fields" });
-        }
-
 		const transport = nodemailer.createTransport({
 		  host: "sandbox.smtp.mailtrap.io",
 		  port: 2525,
